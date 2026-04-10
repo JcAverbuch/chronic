@@ -44,7 +44,7 @@ export default function StepHeader({ step, panelStyle, palette, stageLabels }: P
                 fontFamily: "'Press Start 2P', monospace",
               }}
             >
-              For chronically ill type 2 fun fans
+              For chronically ill type 2 fun
             </div>
             <div
               style={{
