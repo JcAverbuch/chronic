@@ -1,4 +1,4 @@
-import { FormState, Palette } from "@/lib/types";
+import type { FormState, Palette } from "@/lib/types";
 
 export const palette: Palette = {
   bg: "#080312",
@@ -17,16 +17,25 @@ export const palette: Palette = {
 
 export const initialForm: FormState = {
   eventDate: "",
-  fitness: "decent mortal",
+  fitness: "level1",
   daysPerWeek: 4,
   longestRecentEffort: 2,
-  volatility: "mischievous",
+  volatility: "volatile",
   recoveryTolerance: "medium",
+
+  age: 30,
+  gender: "female",
+  knownMaxHr: false,
+  maxHrOverride: 0,
+
   elevationGain: 4000,
+  expectedDistance: 8,
   altitudeExperience: "none",
   hillAccess: "some",
+  outdoorVertAccess: false,
   packTraining: true,
   technicalTerrain: false,
+
   weeklyMileage: 25,
   raceSurface: "trail",
   vertRequired: true,

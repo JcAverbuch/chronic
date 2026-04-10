@@ -8,13 +8,7 @@ import StepHeader from "@/components/StepHeader";
 import WeekCard from "@/components/WeekCard";
 import { initialForm, palette, stageLabels } from "@/lib/constants";
 import { generateTrainingPlan } from "@/lib/planGenerator";
-import { Adventure, FormState, WeekMode } from "@/lib/types";
-
-console.log("AdventureCard:", AdventureCard);
-console.log("StepHeader:", StepHeader);
-console.log("ArrowButton:", ArrowButton);
-console.log("Field:", Field);
-console.log("WeekCard:", WeekCard);
+import type { Adventure, FormState, WeekMode } from "@/lib/types";
 
 export default function Page() {
   const [step, setStep] = useState(0);
@@ -137,10 +131,26 @@ export default function Page() {
 
         {step === 0 && (
           <div style={{ ...panelStyle, padding: 32, textAlign: "center", display: "grid", gap: 18 }}>
-            <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 20, color: palette.yellow, lineHeight: 1.7 }}>
+            <div
+              style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: 20,
+                color: palette.yellow,
+                lineHeight: 1.7,
+              }}
+            >
               TRAIN FOR A MOUNTAIN OR 50-MILER
             </div>
-            <div style={{ fontFamily: "'Press Start 2P', monospace",color: palette.muted, maxWidth: 500, margin: "0 auto", lineHeight: 1.6, fontSize:12 }}>
+            <div
+              style={{
+                fontFamily: "'Press Start 2P', monospace",
+                color: palette.muted,
+                maxWidth: 500,
+                margin: "0 auto",
+                lineHeight: 1.6,
+                fontSize: 12,
+              }}
+            >
               Create a realistic training plan that accounts for flare ups.
             </div>
             <div>
@@ -169,7 +179,13 @@ export default function Page() {
           <div style={{ display: "grid", gap: 18 }}>
             <div style={{ ...panelStyle, padding: 20, display: "grid", gap: 16 }}>
               {sectionTitle("Choose Your Suffering")}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                  gap: 16,
+                }}
+              >
                 <AdventureCard
                   type="mountain"
                   accent={palette.cyan}
@@ -203,13 +219,28 @@ export default function Page() {
             <div style={{ ...panelStyle, padding: 20, display: "grid", gap: 20 }}>
               {sectionTitle("Mission Setup")}
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: 16,
+                }}
+              >
                 <Field label="Event date" hint="When are we attempting this terrible idea?" palette={palette}>
-                  <input type="date" value={form.eventDate} onChange={(e) => updateForm("eventDate", e.target.value)} style={inputStyle} />
+                  <input
+                    type="date"
+                    value={form.eventDate}
+                    onChange={(e) => updateForm("eventDate", e.target.value)}
+                    style={inputStyle}
+                  />
                 </Field>
 
                 <Field label="Current fitness class" palette={palette}>
-                  <select value={form.fitness} onChange={(e) => updateForm("fitness", e.target.value)} style={inputStyle}>
+                  <select
+                    value={form.fitness}
+                    onChange={(e) => updateForm("fitness", e.target.value)}
+                    style={inputStyle}
+                  >
                     <option value="level0">very limited</option>
                     <option value="level1">in "okay" shape</option>
                     <option value="level2">not my first rodeo</option>
@@ -218,17 +249,37 @@ export default function Page() {
                 </Field>
 
                 <Field label="Days per week available" palette={palette}>
-                  <select value={form.daysPerWeek} onChange={(e) => updateForm("daysPerWeek", Number(e.target.value))} style={inputStyle}>
-                    {[3, 4, 5, 6].map((n) => <option key={n} value={n}>{n}</option>)}
+                  <select
+                    value={form.daysPerWeek}
+                    onChange={(e) => updateForm("daysPerWeek", Number(e.target.value))}
+                    style={inputStyle}
+                  >
+                    {[3, 4, 5, 6].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
                   </select>
                 </Field>
 
                 <Field label="Longest recent effort (hours)" hint="Your current long run, hike, or all-day nonsense." palette={palette}>
-                  <input type="number" min="1" max="12" step="0.5" value={form.longestRecentEffort} onChange={(e) => updateForm("longestRecentEffort", Number(e.target.value))} style={inputStyle} />
+                  <input
+                    type="number"
+                    min="1"
+                    max="12"
+                    step="0.5"
+                    value={form.longestRecentEffort}
+                    onChange={(e) => updateForm("longestRecentEffort", Number(e.target.value))}
+                    style={inputStyle}
+                  />
                 </Field>
 
                 <Field label="How annoying is your body lately?" palette={palette}>
-                  <select value={form.volatility} onChange={(e) => updateForm("volatility", e.target.value)} style={inputStyle}>
+                  <select
+                    value={form.volatility}
+                    onChange={(e) => updateForm("volatility", e.target.value)}
+                    style={inputStyle}
+                  >
                     <option value="stable">mostly stable</option>
                     <option value="volatile">mischievous</option>
                     <option value="unstable">most days suck</option>
@@ -236,43 +287,149 @@ export default function Page() {
                 </Field>
 
                 <Field label="Recovery tolerance" palette={palette}>
-                  <select value={form.recoveryTolerance} onChange={(e) => updateForm("recoveryTolerance", e.target.value)} style={inputStyle}>
+                  <select
+                    value={form.recoveryTolerance}
+                    onChange={(e) => updateForm("recoveryTolerance", e.target.value)}
+                    style={inputStyle}
+                  >
                     <option value="low">a bad day wipes out my week</option>
                     <option value="medium">i'll be fine in a couple days</option>
                     <option value="high">tomorrow's a new day!</option>
                   </select>
                 </Field>
+
+                <Field label="Age" palette={palette}>
+                  <input
+                    type="number"
+                    min="12"
+                    max="100"
+                    value={form.age}
+                    onChange={(e) => updateForm("age", Number(e.target.value))}
+                    style={inputStyle}
+                  />
+                </Field>
+
+                <Field label="Gender" palette={palette}>
+                  <select
+                    value={form.gender}
+                    onChange={(e) => updateForm("gender", e.target.value)}
+                    style={inputStyle}
+                  >
+                    <option value="female">female</option>
+                    <option value="male">male</option>
+                    <option value="other">other / prefer not to say</option>
+                  </select>
+                </Field>
+
+                <Field label="Do you know your max HR?" palette={palette}>
+                  <select
+                    value={String(form.knownMaxHr)}
+                    onChange={(e) => updateForm("knownMaxHr", e.target.value === "true")}
+                    style={inputStyle}
+                  >
+                    <option value="false">no, calculate it</option>
+                    <option value="true">yes, i know it</option>
+                  </select>
+                </Field>
+
+                {form.knownMaxHr ? (
+                  <Field label="Max HR override" palette={palette}>
+                    <input
+                      type="number"
+                      min="100"
+                      max="240"
+                      value={form.maxHrOverride}
+                      onChange={(e) => updateForm("maxHrOverride", Number(e.target.value))}
+                      style={inputStyle}
+                    />
+                  </Field>
+                ) : null}
               </div>
 
               {adventure === "mountain" ? (
                 <div style={{ display: "grid", gap: 16 }}>
                   {sectionTitle("Mountain Stats")}
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                      gap: 16,
+                    }}
+                  >
                     <Field label="Expected elevation gain (ft)" palette={palette}>
-                      <input type="number" min="1000" step="500" value={form.elevationGain} onChange={(e) => updateForm("elevationGain", Number(e.target.value))} style={inputStyle} />
+                      <input
+                        type="number"
+                        min="1000"
+                        step="500"
+                        value={form.elevationGain}
+                        onChange={(e) => updateForm("elevationGain", Number(e.target.value))}
+                        style={inputStyle}
+                      />
                     </Field>
+
+                    <Field label="Expected distance traversed (miles)" palette={palette}>
+                      <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={form.expectedDistance}
+                        onChange={(e) => updateForm("expectedDistance", Number(e.target.value))}
+                        style={inputStyle}
+                      />
+                    </Field>
+
                     <Field label="Altitude experience" palette={palette}>
-                      <select value={form.altitudeExperience} onChange={(e) => updateForm("altitudeExperience", e.target.value)} style={inputStyle}>
-                        <option>none</option>
-                        <option>a little</option>
-                        <option>pretty comfy</option>
+                      <select
+                        value={form.altitudeExperience}
+                        onChange={(e) => updateForm("altitudeExperience", e.target.value)}
+                        style={inputStyle}
+                      >
+                        <option value="none">none</option>
+                        <option value="a_little">a little</option>
+                        <option value="pretty_comfy">pretty comfy</option>
                       </select>
                     </Field>
+
                     <Field label="Access to hills or stairs" palette={palette}>
-                      <select value={form.hillAccess} onChange={(e) => updateForm("hillAccess", e.target.value)} style={inputStyle}>
-                        <option>none</option>
-                        <option>some</option>
-                        <option>excellent</option>
+                      <select
+                        value={form.hillAccess}
+                        onChange={(e) => updateForm("hillAccess", e.target.value)}
+                        style={inputStyle}
+                      >
+                        <option value="none">none</option>
+                        <option value="some">some</option>
+                        <option value="excellent">excellent</option>
                       </select>
                     </Field>
+
+                    <Field label="Outdoor vert access?" palette={palette}>
+                      <select
+                        value={String(form.outdoorVertAccess)}
+                        onChange={(e) => updateForm("outdoorVertAccess", e.target.value === "true")}
+                        style={inputStyle}
+                      >
+                        <option value="false">no</option>
+                        <option value="true">yes</option>
+                      </select>
+                    </Field>
+
                     <Field label="Pack training access" palette={palette}>
-                      <select value={String(form.packTraining)} onChange={(e) => updateForm("packTraining", e.target.value === "true")} style={inputStyle}>
+                      <select
+                        value={String(form.packTraining)}
+                        onChange={(e) => updateForm("packTraining", e.target.value === "true")}
+                        style={inputStyle}
+                      >
                         <option value="true">yes</option>
                         <option value="false">no</option>
                       </select>
                     </Field>
+
                     <Field label="Technical terrain?" palette={palette}>
-                      <select value={String(form.technicalTerrain)} onChange={(e) => updateForm("technicalTerrain", e.target.value === "true")} style={inputStyle}>
+                      <select
+                        value={String(form.technicalTerrain)}
+                        onChange={(e) => updateForm("technicalTerrain", e.target.value === "true")}
+                        style={inputStyle}
+                      >
                         <option value="false">no</option>
                         <option value="true">yes</option>
                       </select>
@@ -282,27 +439,55 @@ export default function Page() {
               ) : (
                 <div style={{ display: "grid", gap: 16 }}>
                   {sectionTitle("Ultra Stats")}
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                      gap: 16,
+                    }}
+                  >
                     <Field label="Current weekly mileage" palette={palette}>
-                      <input type="number" min="5" step="5" value={form.weeklyMileage} onChange={(e) => updateForm("weeklyMileage", Number(e.target.value))} style={inputStyle} />
+                      <input
+                        type="number"
+                        min="5"
+                        step="5"
+                        value={form.weeklyMileage}
+                        onChange={(e) => updateForm("weeklyMileage", Number(e.target.value))}
+                        style={inputStyle}
+                      />
                     </Field>
+
                     <Field label="Trail or road?" palette={palette}>
-                      <select value={form.raceSurface} onChange={(e) => updateForm("raceSurface", e.target.value)} style={inputStyle}>
+                      <select
+                        value={form.raceSurface}
+                        onChange={(e) => updateForm("raceSurface", e.target.value)}
+                        style={inputStyle}
+                      >
                         <option value="trail">trail</option>
                         <option value="road">road</option>
                       </select>
                     </Field>
+
                     <Field label="Vert required?" palette={palette}>
-                      <select value={String(form.vertRequired)} onChange={(e) => updateForm("vertRequired", e.target.value === "true")} style={inputStyle}>
+                      <select
+                        value={String(form.vertRequired)}
+                        onChange={(e) => updateForm("vertRequired", e.target.value === "true")}
+                        style={inputStyle}
+                      >
                         <option value="true">yes</option>
                         <option value="false">no</option>
                       </select>
                     </Field>
+
                     <Field label="Race goal" palette={palette}>
-                      <select value={form.raceGoal} onChange={(e) => updateForm("raceGoal", e.target.value)} style={inputStyle}>
-                        <option>survive</option>
-                        <option>finish strong</option>
-                        <option>feral</option>
+                      <select
+                        value={form.raceGoal}
+                        onChange={(e) => updateForm("raceGoal", e.target.value)}
+                        style={inputStyle}
+                      >
+                        <option value="survive">survive</option>
+                        <option value="finish_strong">finish strong</option>
+                        <option value="feral">feral</option>
                       </select>
                     </Field>
                   </div>
@@ -319,10 +504,100 @@ export default function Page() {
 
         {step === 3 && (
           <div style={{ display: "grid", gap: 18 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "minmax(300px, 380px) 1fr", gap: 18 }}>
+            <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr",
+                  gap: 18,
+                }}
+              >
               <div style={{ ...panelStyle, padding: 20, display: "grid", gap: 18, alignSelf: "start" }}>
                 {sectionTitle("Versus Screen")}
-                {/* keep your existing stats / versus block here */}
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr auto 1fr",
+                    alignItems: "center",
+                    gap: 12,
+                    textAlign: "center",
+                  }}
+                >
+                  <div style={{ display: "grid", gap: 8 }}>
+                    <div style={{ color: palette.cyan, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>
+                      YOU
+                    </div>
+                    <div style={{ fontSize: 42 }}>{adventure === "mountain" ? "🧗" : "🏃"}</div>
+                    <div style={{ color: palette.muted, fontSize: 13 }}>
+                      {form.fitness === "level0"
+                        ? "very limited"
+                        : form.fitness === "level1"
+                          ? 'in "okay" shape'
+                          : form.fitness === "level2"
+                            ? "not my first rodeo"
+                            : "barkley looks easy"}
+                    </div>
+                  </div>
+
+                  <div style={{ color: palette.yellow, fontFamily: "'Press Start 2P', monospace", fontSize: 18 }}>
+                    VS
+                  </div>
+
+                  <div style={{ display: "grid", gap: 8 }}>
+                    <div style={{ color: palette.pink, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>
+                      {adventure === "mountain" ? "THE MOUNTAIN" : "THE 50-MILER"}
+                    </div>
+                    <div style={{ fontSize: 42 }}>{adventure === "mountain" ? "⛰️" : "💀"}</div>
+                    <div style={{ color: palette.muted, fontSize: 13 }}>{weeksUntilEvent} weeks until impact</div>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gap: 12 }}>
+                  {stats.map(([label, value, color]) => (
+                    <div key={label} style={{ display: "grid", gap: 6 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          fontSize: 12,
+                          color: palette.muted,
+                        }}
+                      >
+                        <span>{label}</span>
+                        <span>{value}</span>
+                      </div>
+                      <div
+                        style={{
+                          height: 14,
+                          background: "#090511",
+                          border: `2px solid ${palette.border}`,
+                          borderRadius: 999,
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            width: `${value}%`,
+                            background: color,
+                            borderRadius: 999,
+                            boxShadow: `0 0 12px ${color}`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ ...panelStyle, padding: 14, background: "#0b0615" }}>
+                  <div style={{ color: palette.yellow, fontWeight: 800, marginBottom: 6 }}>
+                    ANNOUNCER NOTE
+                  </div>
+                  <div style={{ color: palette.white, lineHeight: 1.6, fontSize: 14 }}>
+                    {adventure === "mountain"
+                      ? "You have chosen vertical nonsense. We will now build an uphill engine while respecting the reality that the body may occasionally hit the emergency brake."
+                      : "You have chosen prolonged running nonsense. We will now cultivate endurance, pacing, and snack-based diplomacy while accounting for surprise rebellion."}
+                  </div>
+                </div>
               </div>
 
               <div style={{ display: "grid", gap: 16 }}>
