@@ -70,24 +70,21 @@ export default function StepHeader({ step, panelStyle, palette, stageLabels }: P
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          {stageLabels.map((label, i) => (
-            <div
-              key={label}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 999,
-                border: `2px solid ${step === i ? palette.yellow : palette.border}`,
-                color: step === i ? palette.yellow : palette.muted,
-                fontSize: 12,
-                fontWeight: 800,
-                background: step === i ? "rgba(255,228,94,0.1)" : "transparent",
-              }}
-            >
-              {label}
-            </div>
-          ))}
-        </div>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+  {stageLabels.map((_, i) => (
+    <div
+      key={i}
+      style={{
+        width: 22,
+        height: 22,
+        borderRadius: "50%",
+        border: `3px solid ${step === i ? palette.yellow : palette.border}`,
+        background: step === i ? palette.yellow : "transparent",
+        boxShadow: step === i ? `0 0 12px ${palette.yellow}88` : "none",
+      }}
+    />
+  ))}
+</div>
       </div>
     </div>
   );
