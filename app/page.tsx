@@ -512,45 +512,86 @@ export default function Page() {
                 }}
               >
               <div style={{ ...panelStyle, padding: 20, display: "grid", gap: 18, alignSelf: "start" }}>
-                {sectionTitle("Versus Screen")}
+                {sectionTitle("Vibe check")}
 
                 <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr auto 1fr",
-                    alignItems: "center",
-                    gap: 12,
-                    textAlign: "center",
-                  }}
-                >
-                  <div style={{ display: "grid", gap: 8 }}>
-                    <div style={{ color: palette.cyan, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>
-                      YOU
-                    </div>
-                    <div style={{ fontSize: 42 }}>{adventure === "mountain" ? "🧗" : "🏃"}</div>
-                    <div style={{ color: palette.muted, fontSize: 13 }}>
-                      {form.fitness === "level0"
-                        ? "very limited"
-                        : form.fitness === "level1"
-                          ? 'in "okay" shape'
-                          : form.fitness === "level2"
-                            ? "not my first rodeo"
-                            : "barkley looks easy"}
-                    </div>
-                  </div>
+  style={{
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr) auto minmax(0, 1fr)",
+    alignItems: "start",
+    gap: 12,
+    textAlign: "center",
+  }}
+>
+  <div style={{ display: "grid", gap: 8, justifyItems: "center", minWidth: 0 }}>
+    <div
+      style={{
+        color: palette.cyan,
+        fontFamily: "'Press Start 2P', monospace",
+        fontSize: 12,
+      }}
+    >
+      YOU
+    </div>
+    <img
+      src={adventure === "mountain" ? "/mountain_start.png" : "/ultra_start.png"}
+      alt={adventure === "mountain" ? "Mountain Start" : "Ultra Start"}
+      style={{
+        width: 72,
+        height: 72,
+        objectFit: "contain",
+        imageRendering: "pixelated",
+        display: "block",
+      }}
+    />
+    <div style={{ color: palette.muted, fontSize: 13 }}>
+      {form.fitness === "level0"
+        ? "very limited"
+        : form.fitness === "level1"
+          ? 'in "okay" shape'
+          : form.fitness === "level2"
+            ? "not my first rodeo"
+            : "barkley looks easy"}
+    </div>
+  </div>
 
-                  <div style={{ color: palette.yellow, fontFamily: "'Press Start 2P', monospace", fontSize: 18 }}>
-                    VS
-                  </div>
+  <div
+    style={{
+      color: palette.yellow,
+      fontFamily: "'Press Start 2P', monospace",
+      fontSize: 18,
+      alignSelf: "center",
+    }}
+  >
+    VS
+  </div>
 
-                  <div style={{ display: "grid", gap: 8 }}>
-                    <div style={{ color: palette.pink, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>
-                      {adventure === "mountain" ? "THE MOUNTAIN" : "THE 50-MILER"}
-                    </div>
-                    <div style={{ fontSize: 42 }}>{adventure === "mountain" ? "⛰️" : "💀"}</div>
-                    <div style={{ color: palette.muted, fontSize: 13 }}>{weeksUntilEvent} weeks until impact</div>
-                  </div>
-                </div>
+  <div style={{ display: "grid", gap: 8, justifyItems: "center", minWidth: 0 }}>
+    <div
+      style={{
+        color: palette.pink,
+        fontFamily: "'Press Start 2P', monospace",
+        fontSize: 12,
+      }}
+    >
+      {adventure === "mountain" ? "THE MOUNTAIN" : "THE 50-MILER"}
+    </div>
+    <img
+      src={adventure === "mountain" ? "/mountain_finish.png" : "/ultra_finish.png"}
+      alt={adventure === "mountain" ? "Mountain Finish" : "Ultra Finish"}
+      style={{
+        width: 72,
+        height: 72,
+        objectFit: "contain",
+        imageRendering: "pixelated",
+        display: "block",
+      }}
+    />
+    <div style={{ color: palette.muted, fontSize: 13 }}>
+      {weeksUntilEvent} weeks until impact
+    </div>
+  </div>
+</div>
 
                 <div style={{ display: "grid", gap: 12 }}>
                   {stats.map(([label, value, color]) => (
@@ -588,16 +629,6 @@ export default function Page() {
                   ))}
                 </div>
 
-                <div style={{ ...panelStyle, padding: 14, background: "#0b0615" }}>
-                  <div style={{ color: palette.yellow, fontWeight: 800, marginBottom: 6 }}>
-                    ANNOUNCER NOTE
-                  </div>
-                  <div style={{ color: palette.white, lineHeight: 1.6, fontSize: 14 }}>
-                    {adventure === "mountain"
-                      ? "You have chosen vertical nonsense. We will now build an uphill engine while respecting the reality that the body may occasionally hit the emergency brake."
-                      : "You have chosen prolonged running nonsense. We will now cultivate endurance, pacing, and snack-based diplomacy while accounting for surprise rebellion."}
-                  </div>
-                </div>
               </div>
 
               <div style={{ display: "grid", gap: 16 }}>
