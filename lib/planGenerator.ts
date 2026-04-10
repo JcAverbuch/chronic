@@ -42,15 +42,15 @@ export function generateTrainingPlan({
   const maxHr = getMaxHr(form);
 
   function phaseForWeek(index: number): PhaseName {
-    if (index < baseWeeks) return "Base Arc";
-    if (index < baseWeeks + buildWeeks) return "Build Arc";
-    if (index < totalWeeks - taperWeeks) return "Peak Arc";
-    return "Final Boss: Taper";
+    if (index < baseWeeks) return "Base";
+    if (index < baseWeeks + buildWeeks) return "Build";
+    if (index < totalWeeks - taperWeeks) return "Peak";
+    return "Taper";
   }
 
   function getStepback(index: number) {
     const humanWeek = index + 1;
-    if (phaseForWeek(index) === "Final Boss: Taper") return false;
+    if (phaseForWeek(index) === "Taper") return false;
     if (form.volatility === "unstable") return humanWeek % 3 === 0;
     return humanWeek % 4 === 0;
   }

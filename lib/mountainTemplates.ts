@@ -24,9 +24,9 @@ function getBaseStairMinutes(fitness: string) {
 }
 
 function phaseMultiplier(phase: PhaseName) {
-  if (phase === "Base Arc") return 1.0;
-  if (phase === "Build Arc") return 1.2;
-  if (phase === "Peak Arc") return 1.4;
+  if (phase === "Base") return 1.0;
+  if (phase === "Build") return 1.2;
+  if (phase === "Peak") return 1.4;
   return 0.75;
 }
 
@@ -56,11 +56,11 @@ function buildLongDayText(
   const { peakGain, peakDistance } = getPrimaryPeakTargets(form);
   const peakHours = getEstimatedPeakHours(form);
   const longDayFactor =
-    phase === "Peak Arc"
+    phase === "Peak"
       ? 1
-      : phase === "Build Arc"
+      : phase === "Build"
         ? 0.72 + overallProgress * 0.18
-        : phase === "Base Arc"
+        : phase === "Base"
           ? 0.45 + overallProgress * 0.15
           : 0.55;
 
@@ -110,9 +110,9 @@ function buildGreenWeek({
 
   const longDay = buildLongDayText(form, phase, overallProgress, isStepback);
   const sundayBackToBackHours =
-    phase === "Peak Arc" ? Math.round(longDay.hours * 0.5 * 10) / 10 : Math.round(longDay.hours * 0.45 * 10) / 10;
+    phase === "Peak" ? Math.round(longDay.hours * 0.5 * 10) / 10 : Math.round(longDay.hours * 0.45 * 10) / 10;
   const sundayBackToBackGain =
-    phase === "Peak Arc" ? Math.round(longDay.gain * 0.5 / 100) * 100 : Math.round(longDay.gain * 0.35 / 100) * 100;
+    phase === "Peak" ? Math.round(longDay.gain * 0.5 / 100) * 100 : Math.round(longDay.gain * 0.35 / 100) * 100;
 
   const easyRecovery = zone1(maxHr);
   const aerobic = zone2(maxHr);
@@ -176,28 +176,28 @@ function buildGreenWeek({
     },
     {
       day: "Sun",
-      category: phase === "Peak Arc" ? "long" : "easy",
-      title: phase === "Peak Arc" ? "Back-to-Back Follow-Up" : "Easy Follow-Up Aerobic",
+      category: phase === "Peak" ? "long" : "easy",
+      title: phase === "Peak" ? "Back-to-Back Follow-Up" : "Easy Follow-Up Aerobic",
       workout:
-        phase === "Peak Arc"
+        phase === "Peak"
           ? form.outdoorVertAccess
             ? `${sundayBackToBackHours} hr easy hike aiming for ~${sundayBackToBackGain.toLocaleString()} ft gain.`
             : `${sundayBackToBackHours} hr easy StairMaster / incline walk follow-up.`
           : "30-60 min easy walk, easy spin, or relaxed aerobic movement.",
-      ...(phase === "Peak Arc" ? aerobic : easyRecovery),
+      ...(phase === "Peak" ? aerobic : easyRecovery),
       notes:
-        phase === "Peak Arc"
+        phase === "Peak"
           ? "Day two is intentionally 50% of day one."
           : "If your weekend is inverted, this can be the longer day instead.",
     },
   ];
 
-  if (phase === "Final Boss: Taper") {
+  if (phase === "Taper") {
     week[3] = {
       day: "Thu",
       category: "skills",
       title: "Mountain Skills + Logistics",
-      workout: "30-45 min of navigation, knots, gear checks, or packing practice.",
+      workout: "30-45 min of navigation, knot practice, or gear checks.",
       notes: "Stay sharp without creating fatigue.",
     };
     week[6] = {
@@ -235,7 +235,7 @@ function buildYellowWeek(green: DayPlan[], phase: PhaseName): DayPlan[] {
       return {
         ...day,
         workout: `${day.workout} Reduce volume by ~25%.`,
-        notes: "Keep the habit, shorten the exposure.",
+        notes: "Keep the habit, try to go on a long walk.",
       };
     }
 
@@ -247,7 +247,7 @@ function buildYellowWeek(green: DayPlan[], phase: PhaseName): DayPlan[] {
       };
     }
 
-    if (phase === "Peak Arc" && day.day === "Sun") {
+    if (phase === "Peak" && day.day === "Sun") {
       return {
         ...day,
         title: "Short Easy Follow-Up",
@@ -279,7 +279,7 @@ function buildRedWeek(form: FormState, maxHr: number): DayPlan[] {
       category: "skills",
       title: "Mountain Skills Day",
       workout: "20-40 min of knots, navigation, packing, or gear familiarity.",
-      notes: "Low-stress specificity counts.",
+      notes: "This will probably save your life more than another leg day.",
     },
     {
       day: "Wed",

@@ -22,21 +22,21 @@ function getEasyMileageRange(fitness: string) {
 }
 
 function getLongRunRange(phase: PhaseName, fitness: string) {
-  if (phase === "Base Arc") {
+  if (phase === "Base") {
     if (fitness === "level0") return "6-10 mi";
     if (fitness === "level1") return "8-12 mi";
     if (fitness === "level2") return "10-16 mi";
     return "12-18 mi";
   }
 
-  if (phase === "Build Arc") {
+  if (phase === "Build") {
     if (fitness === "level0") return "8-12 mi";
     if (fitness === "level1") return "12-18 mi";
     if (fitness === "level2") return "14-22 mi";
     return "16-24 mi";
   }
 
-  if (phase === "Peak Arc") {
+  if (phase === "Peak") {
     if (fitness === "level0") return "10-14 mi";
     if (fitness === "level1") return "14-20 mi";
     if (fitness === "level2") return "18-26 mi";
@@ -75,7 +75,7 @@ function buildGreenWeek({
   const easyRange = getEasyMileageRange(form.fitness);
   const longRange = getLongRunRange(phase, form.fitness);
   const rotation = getQualityRotation(weekNum);
-  const tempoAllowed = phase === "Build Arc" && form.volatility !== "unstable";
+  const tempoAllowed = phase === "Build" && form.volatility !== "unstable";
 
   let workoutDay: DayPlan = {
     day: "Wed",
@@ -83,7 +83,7 @@ function buildGreenWeek({
     title: "Hill Workout",
     workout: `2 mi easy, hill workout, 2 mi easy. Keep it smooth and controlled.`,
     ...hardZone,
-    notes: "Think powerful, not desperate.",
+    notes: "Like 12-3-30 but maybe 5-5-until you can't anymore.",
   };
 
   if (rotation === "tempo" && tempoAllowed) {
@@ -102,11 +102,11 @@ function buildGreenWeek({
       title: "Intervals / Threshold",
       workout: `2 mi easy, threshold-style intervals, 2 mi easy.`,
       ...hardZone,
-      notes: "Controlled suffering, not a race.",
+      notes: "Try to speed up ~1min / mile in 0.5 mile intervals.",
     };
   }
 
-  if (phase === "Base Arc") {
+  if (phase === "Base") {
     workoutDay = {
       day: "Wed",
       category: "quality",
@@ -120,7 +120,7 @@ function buildGreenWeek({
     };
   }
 
-  if (phase === "Final Boss: Taper") {
+  if (phase === "Taper") {
     workoutDay = {
       day: "Wed",
       category: "quality",
@@ -137,7 +137,7 @@ function buildGreenWeek({
       category: "rest",
       title: "Rest",
       workout: "Rest day.",
-      notes: "Let the adaptations happen.",
+      notes: "Most important day of the week.",
     },
     {
       day: "Tue",
@@ -145,7 +145,7 @@ function buildGreenWeek({
       title: "Easy Run + Hills / Strides",
       workout: `${easyRange} easy with short hills or strides at the end.`,
       ...easyZone,
-      notes: "Run relaxed. Fast bits are just a sprinkle.",
+      notes: "Run relaxed. Speed up a tad for an effort boost.",
     },
     workoutDay,
     {
@@ -164,7 +164,7 @@ function buildGreenWeek({
         strengthDays === 2
           ? "25-40 min upper body + core strength."
           : "Rest, cross-train, or 20-40 min recovery walk.",
-      notes: "Save something for the weekend.",
+      notes: "Break up the running.",
     },
     {
       day: "Sat",
@@ -173,23 +173,23 @@ function buildGreenWeek({
       workout: `${longRange} on trails if possible.`,
       ...easyZone,
       notes:
-        phase === "Peak Arc"
+        phase === "Peak"
           ? "Main long run of the week."
-          : "Keep it mostly easy and steady.",
+          : "Keep it at a conversational pace.",
     },
     {
       day: "Sun",
-      category: phase === "Peak Arc" ? "easy" : "easy",
-      title: phase === "Peak Arc" ? "Back-to-Back Easy Run" : "Easy Run / Hike",
+      category: phase === "Peak" ? "easy" : "easy",
+      title: phase === "Peak" ? "Back-to-Back Easy Run" : "Easy Run / Hike",
       workout:
-        phase === "Peak Arc"
+        phase === "Peak"
           ? `Shorter easy run or hike at roughly 50-60% of Saturday load.`
           : `${easyRange} easy, or a long hike if that sounds more fun.`,
       ...easyZone,
       notes:
-        phase === "Peak Arc"
+        phase === "Peak"
           ? "Keep it easier than Saturday."
-          : "Time on feet still counts.",
+          : "Time on feet still counts. If you can't run, go on a long walk.",
     },
   ];
 
@@ -208,11 +208,11 @@ function buildGreenWeek({
       ...week[5],
       title: "Step-Back Long Run",
       workout: `${easyRange} to shorter end of long-run range. Stay relaxed.`,
-      notes: "Reduce stress and let the block consolidate.",
+      notes: "Take it easy!.",
     };
   }
 
-  if (phase === "Final Boss: Taper") {
+  if (phase === "Taper") {
     week[6] = {
       day: "Sun",
       category: "easy",
@@ -236,7 +236,7 @@ function buildYellowWeek(green: DayPlan[]): DayPlan[] {
         workout: "30-50 min easy run or aerobic cross-train.",
         zoneLabel: "Zone 2",
         zonePercent: "65-75% MHR",
-        notes: "Keep the slot, remove the bite.",
+        notes: "Keep the habit, if running is too tough try an incline walk.",
       };
     }
 
@@ -286,7 +286,7 @@ function buildRedWeek(maxHr: number): DayPlan[] {
       title: "Optional Easy Run",
       workout: "20-35 min easy run or easy walk.",
       ...easyZone,
-      notes: "Skip it if your body is not having it.",
+      notes: "Skip it if your body is not having it, or change to an incline walk.",
     },
     {
       day: "Wed",
