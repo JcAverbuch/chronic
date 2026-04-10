@@ -138,9 +138,7 @@ export default function Page() {
         {step === 0 && (
           <div style={{ ...panelStyle, padding: 32, textAlign: "center", display: "grid", gap: 18 }}>
             <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 20, color: palette.yellow, lineHeight: 1.7 }}>
-              TRAIN FOR A MOUNTAIN OR A 50-MILER
-              <br />
-              (despite doctors orders)
+              TRAIN FOR A MOUNTAIN OR 50-MILER
             </div>
             <div style={{ fontFamily: "'Press Start 2P', monospace",color: palette.muted, maxWidth: 500, margin: "0 auto", lineHeight: 1.6, fontSize:12 }}>
               Create a realistic training plan that accounts for flare ups.
