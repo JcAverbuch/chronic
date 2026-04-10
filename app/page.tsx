@@ -574,7 +574,7 @@ export default function Page() {
         fontSize: 12,
       }}
     >
-      {adventure === "mountain" ? "THE MOUNTAIN" : "THE 50-MILER"}
+      {adventure === "mountain" ? "MOUNTAIN" : "50-MILER"}
     </div>
     <img
       src={adventure === "mountain" ? "/mountain_finish.png" : "/ultra_finish.png"}
