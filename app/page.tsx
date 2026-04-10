@@ -1,65 +1,349 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useMemo, useState } from "react";
+import AdventureCard from "@/components/AdventureCard";
+import ArrowButton from "@/components/ArrowButton";
+import Field from "@/components/Field";
+import StepHeader from "@/components/StepHeader";
+import WeekCard from "@/components/WeekCard";
+import { initialForm, palette, stageLabels } from "@/lib/constants";
+import { generateTrainingPlan } from "@/lib/planGenerator";
+import { Adventure, FormState, WeekMode } from "@/lib/types";
+
+console.log("AdventureCard:", AdventureCard);
+console.log("StepHeader:", StepHeader);
+console.log("ArrowButton:", ArrowButton);
+console.log("Field:", Field);
+console.log("WeekCard:", WeekCard);
+
+export default function Page() {
+  const [step, setStep] = useState(0);
+  const [adventure, setAdventure] = useState<Adventure>("mountain");
+  const [weekModes, setWeekModes] = useState<Record<number, WeekMode>>({});
+  const [form, setForm] = useState<FormState>(initialForm);
+
+  const updateForm = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const weeksUntilEvent = useMemo(() => {
+    if (!form.eventDate) return 16;
+    const today = new Date();
+    const event = new Date(form.eventDate + "T00:00:00");
+    const diff = Math.ceil((event.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 7));
+    return Math.max(4, diff);
+  }, [form.eventDate]);
+
+  const trainingPlan = useMemo(
+    () => generateTrainingPlan({ adventure, form, weeksUntilEvent, palette }),
+    [adventure, form, weeksUntilEvent]
+  );
+
+  const stats = useMemo(() => {
+    const endurance = Math.min(100, Math.round(Number(form.longestRecentEffort || 1) * 18));
+    const availability = Math.min(100, Number(form.daysPerWeek || 4) * 16);
+    const chaosResistance =
+      form.volatility === "mostly stable" ? 82 : form.volatility === "mischievous" ? 58 : 33;
+    const vertTolerance =
+      adventure === "mountain"
+        ? form.hillAccess === "excellent"
+          ? 85
+          : form.hillAccess === "some"
+            ? 58
+            : 28
+        : form.vertRequired
+          ? 61
+          : 35;
+    const flareResilience =
+      form.recoveryTolerance === "high" ? 78 : form.recoveryTolerance === "medium" ? 55 : 37;
+
+    return [
+      ["ENDURANCE", endurance, palette.cyan],
+      ["TIME SLOTS", availability, palette.pink],
+      ["CHAOS RESIST", chaosResistance, palette.yellow],
+      ["VERT TOL", vertTolerance, palette.green],
+      ["FLARE RES", flareResilience, palette.red],
+    ] as const;
+  }, [adventure, form]);
+
+  const activeMode = (weekNum: number): WeekMode => weekModes[weekNum] || "green";
+
+  const setMode = (weekNum: number, mode: WeekMode) => {
+    setWeekModes((prev) => ({ ...prev, [weekNum]: mode }));
+  };
+
+  const pixelShadow = `0 0 0 2px ${palette.border}, 0 0 0 4px #000, 0 0 18px rgba(255,79,216,0.18)`;
+
+  const panelStyle: React.CSSProperties = {
+    background: `linear-gradient(180deg, ${palette.panel2}, ${palette.panel})`,
+    border: `2px solid ${palette.border}`,
+    boxShadow: pixelShadow,
+    borderRadius: 8,
+  };
+
+  const inputStyle: React.CSSProperties = {
+    background: "#090511",
+    color: palette.white,
+    border: `2px solid ${palette.border}`,
+    padding: "12px 14px",
+    borderRadius: 6,
+    width: "100%",
+    fontSize: 14,
+    outline: "none",
+  };
+
+  const sectionTitle = (text: string) => (
+    <div
+      style={{
+        fontFamily: "'Press Start 2P', monospace",
+        fontSize: 14,
+        color: palette.yellow,
+        letterSpacing: 1,
+        textTransform: "uppercase",
+      }}
+    >
+      {text}
+    </div>
+  );
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top, rgba(136,86,255,0.22), transparent 30%), radial-gradient(circle at bottom, rgba(55,231,255,0.12), transparent 25%), #080312",
+        color: palette.white,
+        fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+        padding: 24,
+      }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;700;800&display=swap');
+        * { box-sizing: border-box; }
+        button, input, select { font-family: inherit; }
+      `}</style>
+
+      <div style={{ maxWidth: 1200, margin: "0 auto", display: "grid", gap: 20 }}>
+        <StepHeader
+          step={step}
+          panelStyle={panelStyle}
+          palette={palette}
+          stageLabels={stageLabels}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        {step === 0 && (
+          <div style={{ ...panelStyle, padding: 32, textAlign: "center", display: "grid", gap: 18 }}>
+            <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 20, color: palette.yellow, lineHeight: 1.7 }}>
+              TRAIN FOR A MOUNTAIN OR A 50-MILER
+              <br />
+              WITHOUT BECOMING A CAUTIONARY TALE
+            </div>
+            <div style={{ color: palette.muted, maxWidth: 760, margin: "0 auto", lineHeight: 1.6 }}>
+              Choose your adventure. Enter your stats. Receive a training plan with green, yellow, and red options for when your body is cooperative, suspicious, or actively unionizing.
+            </div>
+            <div>
+              <button
+                onClick={() => setStep(1)}
+                style={{
+                  background: palette.green,
+                  color: "#12091f",
+                  border: `2px solid ${palette.green}`,
+                  borderRadius: 8,
+                  padding: "14px 16px",
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  cursor: "pointer",
+                  boxShadow: `0 0 18px ${palette.green}77`,
+                }}
+              >
+                Begin Delusions
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div style={{ display: "grid", gap: 18 }}>
+            <div style={{ ...panelStyle, padding: 20, display: "grid", gap: 16 }}>
+              {sectionTitle("Choose Your Suffering")}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+                <AdventureCard
+                  type="mountain"
+                  accent={palette.cyan}
+                  active={adventure === "mountain"}
+                  onClick={setAdventure}
+                  panelStyle={panelStyle}
+                  pixelShadow={pixelShadow}
+                  palette={palette}
+                />
+                <AdventureCard
+                  type="ultramarathon"
+                  accent={palette.pink}
+                  active={adventure === "ultramarathon"}
+                  onClick={setAdventure}
+                  panelStyle={panelStyle}
+                  pixelShadow={pixelShadow}
+                  palette={palette}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <ArrowButton direction="left" onClick={() => setStep(0)} />
+              <ArrowButton onClick={() => setStep(2)} />
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div style={{ display: "grid", gap: 18 }}>
+            <div style={{ ...panelStyle, padding: 20, display: "grid", gap: 20 }}>
+              {sectionTitle("Mission Setup")}
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+                <Field label="Event date" hint="When are we attempting this terrible idea?" palette={palette}>
+                  <input type="date" value={form.eventDate} onChange={(e) => updateForm("eventDate", e.target.value)} style={inputStyle} />
+                </Field>
+
+                <Field label="Current fitness class" palette={palette}>
+                  <select value={form.fitness} onChange={(e) => updateForm("fitness", e.target.value)} style={inputStyle}>
+                    <option>freshly emerged from the bog</option>
+                    <option>decent mortal</option>
+                    <option>trail goblin</option>
+                    <option>alpine raccoon demigod</option>
+                  </select>
+                </Field>
+
+                <Field label="Days per week available" palette={palette}>
+                  <select value={form.daysPerWeek} onChange={(e) => updateForm("daysPerWeek", Number(e.target.value))} style={inputStyle}>
+                    {[3, 4, 5, 6].map((n) => <option key={n} value={n}>{n}</option>)}
+                  </select>
+                </Field>
+
+                <Field label="Longest recent effort (hours)" hint="Your current long run, hike, or all-day nonsense." palette={palette}>
+                  <input type="number" min="1" max="12" step="0.5" value={form.longestRecentEffort} onChange={(e) => updateForm("longestRecentEffort", Number(e.target.value))} style={inputStyle} />
+                </Field>
+
+                <Field label="How haunted is your body lately?" palette={palette}>
+                  <select value={form.volatility} onChange={(e) => updateForm("volatility", e.target.value)} style={inputStyle}>
+                    <option>mostly stable</option>
+                    <option>mischievous</option>
+                    <option>full goblin mode</option>
+                  </select>
+                </Field>
+
+                <Field label="Recovery tolerance" palette={palette}>
+                  <select value={form.recoveryTolerance} onChange={(e) => updateForm("recoveryTolerance", e.target.value)} style={inputStyle}>
+                    <option value="low">fragile little star</option>
+                    <option value="medium">medium</option>
+                    <option value="high">shockingly robust</option>
+                  </select>
+                </Field>
+              </div>
+
+              {adventure === "mountain" ? (
+                <div style={{ display: "grid", gap: 16 }}>
+                  {sectionTitle("Mountain Stats")}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+                    <Field label="Expected elevation gain (ft)" palette={palette}>
+                      <input type="number" min="1000" step="500" value={form.elevationGain} onChange={(e) => updateForm("elevationGain", Number(e.target.value))} style={inputStyle} />
+                    </Field>
+                    <Field label="Altitude experience" palette={palette}>
+                      <select value={form.altitudeExperience} onChange={(e) => updateForm("altitudeExperience", e.target.value)} style={inputStyle}>
+                        <option>none</option>
+                        <option>a little</option>
+                        <option>pretty comfy</option>
+                      </select>
+                    </Field>
+                    <Field label="Access to hills or stairs" palette={palette}>
+                      <select value={form.hillAccess} onChange={(e) => updateForm("hillAccess", e.target.value)} style={inputStyle}>
+                        <option>none</option>
+                        <option>some</option>
+                        <option>excellent</option>
+                      </select>
+                    </Field>
+                    <Field label="Pack training access" palette={palette}>
+                      <select value={String(form.packTraining)} onChange={(e) => updateForm("packTraining", e.target.value === "true")} style={inputStyle}>
+                        <option value="true">yes</option>
+                        <option value="false">no</option>
+                      </select>
+                    </Field>
+                    <Field label="Technical terrain?" palette={palette}>
+                      <select value={String(form.technicalTerrain)} onChange={(e) => updateForm("technicalTerrain", e.target.value === "true")} style={inputStyle}>
+                        <option value="false">no</option>
+                        <option value="true">yes</option>
+                      </select>
+                    </Field>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: "grid", gap: 16 }}>
+                  {sectionTitle("Ultra Stats")}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+                    <Field label="Current weekly mileage" palette={palette}>
+                      <input type="number" min="5" step="5" value={form.weeklyMileage} onChange={(e) => updateForm("weeklyMileage", Number(e.target.value))} style={inputStyle} />
+                    </Field>
+                    <Field label="Trail or road?" palette={palette}>
+                      <select value={form.raceSurface} onChange={(e) => updateForm("raceSurface", e.target.value)} style={inputStyle}>
+                        <option value="trail">trail</option>
+                        <option value="road">road</option>
+                      </select>
+                    </Field>
+                    <Field label="Vert required?" palette={palette}>
+                      <select value={String(form.vertRequired)} onChange={(e) => updateForm("vertRequired", e.target.value === "true")} style={inputStyle}>
+                        <option value="true">yes</option>
+                        <option value="false">no</option>
+                      </select>
+                    </Field>
+                    <Field label="Race goal" palette={palette}>
+                      <select value={form.raceGoal} onChange={(e) => updateForm("raceGoal", e.target.value)} style={inputStyle}>
+                        <option>survive</option>
+                        <option>finish strong</option>
+                        <option>feral</option>
+                      </select>
+                    </Field>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <ArrowButton direction="left" onClick={() => setStep(1)} />
+              <ArrowButton onClick={() => setStep(3)} />
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div style={{ display: "grid", gap: 18 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "minmax(300px, 380px) 1fr", gap: 18 }}>
+              <div style={{ ...panelStyle, padding: 20, display: "grid", gap: 18, alignSelf: "start" }}>
+                {sectionTitle("Versus Screen")}
+                {/* keep your existing stats / versus block here */}
+              </div>
+
+              <div style={{ display: "grid", gap: 16 }}>
+                {trainingPlan.map((week) => (
+                  <WeekCard
+                    key={week.weekNum}
+                    week={week}
+                    activeMode={activeMode(week.weekNum)}
+                    setMode={setMode}
+                    panelStyle={panelStyle}
+                    palette={palette}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <ArrowButton direction="left" onClick={() => setStep(2)} />
+              <ArrowButton onClick={() => setStep(0)} />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
