@@ -20,11 +20,30 @@ export function generateTrainingPlan({
   const baseWeeks = Math.max(1, totalWeeks - taperWeeks - peakWeeks - buildWeeks);
 
   const volatilityMultiplier =
-    form.volatility === "mostly stable"
+    form.volatility === "stable"
       ? 1.0
-      : form.volatility === "mischievous"
+      : form.volatility === "volatile"
         ? 0.9
         : 0.78;
+
+  const fitnessMultiplier =
+    form.fitness === "level0"
+      ? 0.75
+      : form.fitness === "level1"
+        ? 0.9
+        : form.fitness === "level2"
+          ? 1.0
+          : 1.12;
+
+  const recoveryMultiplier =
+    form.recoveryTolerance === "low"
+      ? 0.82
+      : form.recoveryTolerance === "medium"
+        ? 1.0
+        : 1.08;
+
+  const progressionTuning =
+    0.85 + volatilityMultiplier * fitnessMultiplier * recoveryMultiplier * 0.15;
 
   const daysPerWeek = Number(form.daysPerWeek || 4);
   const longestRecentEffort = Number(form.longestRecentEffort || 2);
@@ -53,11 +72,11 @@ export function generateTrainingPlan({
       } else if (isStepback) {
         progress *= 0.9;
       } else if (phase === "Base Arc") {
-        progress *= 1.07 * volatilityMultiplier;
+        progress *= 1.07 * progressionTuning;
       } else if (phase === "Build Arc") {
-        progress *= 1.09 * volatilityMultiplier;
+        progress *= 1.09 * progressionTuning;
       } else if (phase === "Peak Arc") {
-        progress *= 1.05 * volatilityMultiplier;
+        progress *= 1.05 * progressionTuning;
       }
     }
     return progress;
@@ -67,11 +86,36 @@ export function generateTrainingPlan({
     const phase = phaseForWeek(index);
     const isStepback = getStepback(index);
     const ramp = rampForWeek(index);
-    const longEffort = Math.max(1.5, Math.round(Math.min(longestRecentEffort * ramp, 9) * 10) / 10);
+    const sessions = Math.max(3, daysPerWeek);
+
+    const maxMountainLongEffort =
+      form.fitness === "level0"
+        ? 5.5
+        : form.fitness === "level1"
+          ? 6.5
+          : form.fitness === "level2"
+            ? 8
+            : 9;
+
+    const vertCap =
+      form.fitness === "level0"
+        ? 5000
+        : form.fitness === "level1"
+          ? 6500
+          : form.fitness === "level2"
+            ? 8000
+            : 9500;
+
+    const longEffort = Math.max(
+      1.5,
+      Math.round(Math.min(longestRecentEffort * ramp, maxMountainLongEffort) * 10) / 10,
+    );
+
     const vertBase = Number(form.elevationGain || 4000);
     const vertTarget =
-      Math.round((Math.min(vertBase * 0.7, 9000) * Math.min(ramp, 1.5)) / 100) * 100;
-    const sessions = Math.max(3, daysPerWeek);
+      Math.round(
+        (Math.min(vertBase * 0.7, vertCap) * Math.min(ramp, 1.5)) / 100,
+      ) * 100;
 
     let focus = "Build uphill engine and stop beefing with Zone 2";
     if (phase === "Build Arc") focus = "Add vert, pack work, and muscular endurance";
@@ -102,9 +146,31 @@ export function generateTrainingPlan({
     const phase = phaseForWeek(index);
     const isStepback = getStepback(index);
     const ramp = rampForWeek(index);
-    const weeklyMiles = Math.round(Math.min(currentMileage * ramp, 70));
-    const longRun = Math.max(1.5, Math.round(Math.min(longestRecentEffort * ramp, 7.5) * 10) / 10);
     const sessions = Math.max(3, daysPerWeek);
+
+    const maxWeeklyMiles =
+      form.fitness === "level0"
+        ? 35
+        : form.fitness === "level1"
+          ? 45
+          : form.fitness === "level2"
+            ? 60
+            : 75;
+
+    const maxLongRunHours =
+      form.fitness === "level0"
+        ? 4
+        : form.fitness === "level1"
+          ? 5
+          : form.fitness === "level2"
+            ? 6.5
+            : 7.5;
+
+    const weeklyMiles = Math.round(Math.min(currentMileage * ramp, maxWeeklyMiles));
+    const longRun = Math.max(
+      1.5,
+      Math.round(Math.min(longestRecentEffort * ramp, maxLongRunHours) * 10) / 10,
+    );
 
     let focus = "Build aerobic durability and remember easy means easy";
     if (phase === "Build Arc") focus = "Increase mileage and long-run confidence";

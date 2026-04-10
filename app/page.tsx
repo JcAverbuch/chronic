@@ -43,7 +43,11 @@ export default function Page() {
     const endurance = Math.min(100, Math.round(Number(form.longestRecentEffort || 1) * 18));
     const availability = Math.min(100, Number(form.daysPerWeek || 4) * 16);
     const chaosResistance =
-      form.volatility === "mostly stable" ? 82 : form.volatility === "mischievous" ? 58 : 33;
+      form.volatility === "stable"
+        ? 82
+        : form.volatility === "volatile"
+          ? 58
+          : 33;
     const vertTolerance =
       adventure === "mountain"
         ? form.hillAccess === "excellent"
@@ -136,10 +140,10 @@ export default function Page() {
             <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 20, color: palette.yellow, lineHeight: 1.7 }}>
               TRAIN FOR A MOUNTAIN OR A 50-MILER
               <br />
-              WITHOUT BECOMING A CAUTIONARY TALE
+              despite doctors orders
             </div>
             <div style={{ color: palette.muted, maxWidth: 760, margin: "0 auto", lineHeight: 1.6 }}>
-              Choose your adventure. Enter your stats. Receive a training plan with green, yellow, and red options for when your body is cooperative, suspicious, or actively unionizing.
+              Receive a training plan with green, yellow, and red options for when your body is cooperative, suspicious, or being really fucking annoying.
             </div>
             <div>
               <button
@@ -208,10 +212,10 @@ export default function Page() {
 
                 <Field label="Current fitness class" palette={palette}>
                   <select value={form.fitness} onChange={(e) => updateForm("fitness", e.target.value)} style={inputStyle}>
-                    <option>freshly emerged from the bog</option>
-                    <option>decent mortal</option>
-                    <option>trail goblin</option>
-                    <option>alpine raccoon demigod</option>
+                    <option value="level0">very limited</option>
+                    <option value="level1">in "okay" shape</option>
+                    <option value="level2">not my first rodeo</option>
+                    <option value="level3">barkley looks easy</option>
                   </select>
                 </Field>
 
@@ -225,19 +229,19 @@ export default function Page() {
                   <input type="number" min="1" max="12" step="0.5" value={form.longestRecentEffort} onChange={(e) => updateForm("longestRecentEffort", Number(e.target.value))} style={inputStyle} />
                 </Field>
 
-                <Field label="How haunted is your body lately?" palette={palette}>
+                <Field label="How annoying is your body lately?" palette={palette}>
                   <select value={form.volatility} onChange={(e) => updateForm("volatility", e.target.value)} style={inputStyle}>
-                    <option>mostly stable</option>
-                    <option>mischievous</option>
-                    <option>full goblin mode</option>
+                    <option value="stable">mostly stable</option>
+                    <option value="volatile">mischievous</option>
+                    <option value="unstable">most days suck</option>
                   </select>
                 </Field>
 
                 <Field label="Recovery tolerance" palette={palette}>
                   <select value={form.recoveryTolerance} onChange={(e) => updateForm("recoveryTolerance", e.target.value)} style={inputStyle}>
-                    <option value="low">fragile little star</option>
-                    <option value="medium">medium</option>
-                    <option value="high">shockingly robust</option>
+                    <option value="low">a bad day wipes out my week</option>
+                    <option value="medium">i'll be fine in a couple days</option>
+                    <option value="high">tomorrow's a new day!</option>
                   </select>
                 </Field>
               </div>
