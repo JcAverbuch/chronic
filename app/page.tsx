@@ -79,13 +79,15 @@ export default function Page() {
     borderRadius: 8,
   };
 
-  const inputStyle: React.CSSProperties = {
+    const inputStyle: React.CSSProperties = {
     background: "#090511",
     color: palette.white,
     border: `2px solid ${palette.border}`,
     padding: "12px 14px",
     borderRadius: 6,
     width: "100%",
+    minWidth: 0,
+    boxSizing: "border-box",
     fontSize: 14,
     outline: "none",
   };
