@@ -167,6 +167,7 @@ export default function Page() {
                   letterSpacing: 1,
                   cursor: "pointer",
                   boxShadow: `0 0 18px ${palette.green}77`,
+                  fontFamily: "'Press Start 2P', monospace"
                 }}
               >
                 Begin Delusions

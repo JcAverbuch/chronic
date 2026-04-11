@@ -1,6 +1,6 @@
 export type Adventure = "mountain" | "ultramarathon";
 export type WeekMode = "green" | "yellow" | "red";
-export type PhaseName = "Base Arc" | "Build Arc" | "Peak Arc" | "Final Boss: Taper";
+export type PhaseName = "Base" | "Build" | "Peak" | "Taper";
 
 export type FormState = {
   eventDate: string;
