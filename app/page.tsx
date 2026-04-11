@@ -231,11 +231,15 @@ export default function Page() {
               >
                 <Field label="Event date" hint="When are we attempting this terrible idea?" palette={palette}>
                   <input
-                    type="date"
-                    value={form.eventDate}
-                    onChange={(e) => updateForm("eventDate", e.target.value)}
-                    style={inputStyle}
-                  />
+                      type="date"
+                      value={form.eventDate}
+                      onChange={(e) => updateForm("eventDate", e.target.value)}
+                      style={{
+                        ...inputStyle,
+                        appearance: "none",
+                        WebkitAppearance: "none",
+                      }}
+                    />
                 </Field>
 
                 <Field label="Current fitness class" palette={palette}>
